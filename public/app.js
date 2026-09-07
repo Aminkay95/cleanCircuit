@@ -40,11 +40,8 @@ async function checkToken() {
   }
 }
 
-async function loadValidationOps(){
-  const root=document.querySelector("#validation-ops");
-  try{const m=await api("/api/validation/metrics");const cells=[["Signups",m.signups],["Interviews",`${m.interviews}/${m.thresholds.interviews}`],["Problem confirmed",`${m.problemConfirmed}/${m.thresholds.problemConfirmed}`],["Pilot accepted",`${m.pilotAccepted}/${m.thresholds.pilotAccepted}`],["Paid pilot",`${m.paidPilotAccepted}/${m.thresholds.paidPilotAccepted}`]];root.innerHTML=`<div class="metric-grid">${cells.map(([label,value])=>`<div class="metric"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`).join("")}</div><p>${m.passed?"Validation threshold passed. Production planning may begin.":"Evidence threshold not yet met; continue interviews before production."}</p><form id="interview-form"><label>Business name<input name="businessName" required></label><label>Market<input name="market" value="United States" required></label><label>Pain score (1–10)<input name="painScore" type="number" min="1" max="10" required></label><label>Notes<textarea name="notes"></textarea></label><div class="checks"><label><input name="coreProblemConfirmed" type="checkbox"> Core problem confirmed</label><label><input name="pilotAccepted" type="checkbox"> Pilot accepted</label><label><input name="paidPilotAccepted" type="checkbox"> Paid pilot accepted</label></div><button>Record interview</button></form>`;root.querySelector("form").onsubmit=saveInterview;}catch(error){root.innerHTML=`<p class="muted">${escapeHtml(error.message)}</p>`;}
-}
-async function saveInterview(event){event.preventDefault();const form=event.target;const raw=Object.fromEntries(new FormData(form));const body={...raw,painScore:Number(raw.painScore),coreProblemConfirmed:form.elements.coreProblemConfirmed.checked,pilotAccepted:form.elements.pilotAccepted.checked,paidPilotAccepted:form.elements.paidPilotAccepted.checked};try{await api("/api/validation/interviews",{method:"POST",body:JSON.stringify(body)});await loadValidationOps();}catch(error){alert(error.message);}}
+async function loadValidationOps(){const root=document.querySelector('#validation-ops');try{const projects=await api('/api/projects');root.innerHTML=projects.map(p=>'<p><strong>'+escapeHtml(p.name)+'</strong> · '+escapeHtml(p.directory)+'</p>').join('')||'Approved builds will appear here.';}catch(error){root.textContent=error.message;}}
+
 
 tokenInput.addEventListener("change", checkToken);
 
@@ -89,7 +86,7 @@ function render(rows) {
       }
       if (row.releaseGate) {
         const gate = document.createElement("div"); gate.className = "gate";
-        gate.innerHTML = `<span class="eyebrow">Private staging ready</span><p>${escapeHtml(row.releaseGate.question)}</p><p><a href="/product">Open MVP</a> · <a href="/validate">Preview validation page</a></p><p class="muted">Still excluded: ${row.releaseGate.excludes.map(escapeHtml).join(" · ")}</p><button class="validation-approve">Approve public validation + organic outreach</button> <button class="validation-reject secondary">Reject staging</button>`;
+        gate.innerHTML = `<span class="eyebrow">Private staging ready</span><p>${escapeHtml(row.releaseGate.question)}</p><p>Product runs independently in projects/&lt;project-name&gt;.</p><p class="muted">Still excluded: ${row.releaseGate.excludes.map(escapeHtml).join(" · ")}</p><button class="validation-approve">Approve public validation + organic outreach</button> <button class="validation-reject secondary">Reject staging</button>`;
         if (row.releaseGate.status !== "awaiting_approval") gate.innerHTML = `<p>Validation gate: ${escapeHtml(row.releaseGate.status)}</p>`;
         else {
           gate.querySelector(".validation-approve").onclick = () => validationDecision(row.id, "approved");

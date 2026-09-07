@@ -86,6 +86,7 @@ function planningPrompt(opportunity) {
 Use exactly 3 assumptions, 5 MVP features, 5 exclusions, 5 interview questions, 5 survey questions, 3 acquisition channels, 4 launch steps, and at most 4 critical risks. Every string must be concise (under 30 words). MVP acceptance criteria must be testable. Prefer a simple web stack, Stripe deposits, email notifications, and an e-sign provider; do not build payments or signatures from scratch. External outreach, ad spend, production deployment, and customer-data access remain approval-gated.
 
 APPROVED OPPORTUNITY:
+Every product must be implemented in its own projects/<project-slug>/ directory, with independent dependencies, environment, data and deployment. Never add product routes or customer data to the agency application.
 ${JSON.stringify(brief)}`;
 }
 

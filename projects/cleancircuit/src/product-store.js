@@ -4,7 +4,7 @@ const crypto = require("node:crypto");
 const { Pool } = require("pg");
 
 class ProductStore {
-  constructor(file = path.join(process.cwd(), "data", "service-jobs.json")) {
+  constructor(file = path.join(path.resolve(__dirname,".."), "data", "service-jobs.json")) {
     this.file = file;
     this.queue = Promise.resolve();
   }

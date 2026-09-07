@@ -1,0 +1,2 @@
+.brand-lockup { display: inline-flex; align-items: center; gap: 12px; }
+.brand-lockup img { display: block; object-fit: contain; flex-shrink: 0; }

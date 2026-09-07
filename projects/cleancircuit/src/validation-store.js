@@ -4,7 +4,7 @@ const crypto = require("node:crypto");
 const { Pool } = require("pg");
 
 class JsonValidationStore {
-  constructor(file=path.join(process.cwd(),"data","pilot-signups.json")){this.file=file;this.queue=Promise.resolve();}
+  constructor(file=path.join(path.resolve(__dirname,".."),"data","pilot-signups.json")){this.file=file;this.queue=Promise.resolve();}
   async init(){await fs.mkdir(path.dirname(this.file),{recursive:true});try{await fs.access(this.file);}catch{await fs.writeFile(this.file,"[]\n");}}
   async all(){return JSON.parse(await fs.readFile(this.file,"utf8"));}
   async create(input){const lead={id:crypto.randomUUID(),createdAt:new Date().toISOString(),status:"new",...input};this.queue=this.queue.then(async()=>{const rows=await this.all();rows.unshift(lead);await fs.writeFile(this.file,`${JSON.stringify(rows,null,2)}\n`);});await this.queue;return lead;}

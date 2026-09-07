@@ -1,13 +1,13 @@
 {
-  "name": "saas-scout-orchestrator",
+  "name": "cleancircuit",
   "version": "0.1.0",
   "private": true,
-  "description": "Approval-gated SaaS opportunity research orchestrator",
+  "description": "Cleaning business workflow product",
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "test": "node --test test"
+    "test": "node --test"
   },
   "engines": {
     "node": ">=18"
@@ -15,7 +15,6 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
-    "openai": "^4.85.4",
     "pg": "^8.13.3"
   }
 }
