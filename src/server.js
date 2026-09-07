@@ -43,7 +43,7 @@ app.get("/product", (_req, res) => res.sendFile(path.join(process.cwd(), "public
 app.get("/validate", (_req, res) => res.sendFile(path.join(process.cwd(), "public", "validate.html")));
 app.get("/privacy", (_req, res) => {
   const escape=(value)=>String(value||"").replace(/[&<>\"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;"}[char]));
-  const product=escape(process.env.PRODUCT_NAME||"SweepRelay");
+  const product=escape(process.env.PRODUCT_NAME||"CleanCircuit");
   const business=escape(process.env.PUBLIC_BUSINESS_NAME||"Raducon Holdings");
   const email=escape(process.env.PUBLIC_CONTACT_EMAIL||"Not configured");
   res.type("html").send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${product} Pilot Privacy Notice</title><link rel="stylesheet" href="/validate.css"></head><body><main><nav><strong>${product}</strong><a href="/validate">Back</a></nav><section class="hero"><span class="eyebrow">PILOT PRIVACY NOTICE · VERSION 1</span><h1>We collect only what the pilot needs.</h1><p>${business} stores your email, optional business name, team size, signup time and consent record to evaluate demand and contact you about this pilot. We do not sell this information or use it for unrelated advertising.</p><p>To withdraw or request access or deletion, email <a href="mailto:${email}">${email}</a>. Pilot records are reviewed after 90 days and removed when no longer needed.</p></section></main></body></html>`);
@@ -51,7 +51,7 @@ app.get("/privacy", (_req, res) => {
 app.use("/api/product", createProductRouter(productStore, authorize));
 const signupAttempts = new Map();
 app.get("/api/validation/status", async (_req, res, next) => {
-  try { const rows=await store.all(); const project=rows.find(row=>row.releaseGate?.id==="external-validation"); const approved=process.env.VALIDATION_ENABLED==="true"||project?.status==="validation_approved"; const identityReady=Boolean(process.env.PUBLIC_BUSINESS_NAME&&process.env.PUBLIC_CONTACT_EMAIL); res.json({open:approved&&identityReady,approved,identityReady,product:project?.agencyPlan?.productName||process.env.PRODUCT_NAME||"SweepRelay"}); } catch(error){next(error);}
+  try { const rows=await store.all(); const project=rows.find(row=>row.releaseGate?.id==="external-validation"); const approved=process.env.VALIDATION_ENABLED==="true"||project?.status==="validation_approved"; const identityReady=Boolean(process.env.PUBLIC_BUSINESS_NAME&&process.env.PUBLIC_CONTACT_EMAIL); res.json({open:approved&&identityReady,approved,identityReady,product:project?.agencyPlan?.productName||process.env.PRODUCT_NAME||"CleanCircuit"}); } catch(error){next(error);}
 });
 app.post("/api/validation/signup", async (req,res,next) => {
   try {

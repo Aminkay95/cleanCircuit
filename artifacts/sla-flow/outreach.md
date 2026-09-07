@@ -1,4 +1,4 @@
-# SweepRelay organic validation package
+# CleanCircuit organic validation package
 
 ## Ideal interview candidate
 
