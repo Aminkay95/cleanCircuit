@@ -91,7 +91,7 @@ After approval, `/validate` accepts consented pilot signups with basic rate limi
 
 Set `PUBLIC_BUSINESS_NAME` and a monitored `PUBLIC_CONTACT_EMAIL` before signup collection opens. These values appear in the pilot privacy notice and are deliberately required even after validation approval.
 
-SweepRelay is operated by Raducon Holdings at `raduconholdings.com`. Use `notifications@raduconholdings.com` for automated mail, `support@raduconholdings.com` for replies, `pilot@raduconholdings.com` for research, `billing@raduconholdings.com` for payments, and `privacy@raduconholdings.com` for data requests. Set `PUBLIC_BASE_URL=https://raduconholdings.com` only in the Railway production environment.
+SweepRelay is operated by Raducon Holdings at `raduconholdings.com`. Use `no-reply@raduconholdings.com` for automated mail, `support@raduconholdings.com` for replies, `pilot@raduconholdings.com` for research, `billing@raduconholdings.com` for payments, and `privacy@raduconholdings.com` for data requests. Set `PUBLIC_BASE_URL=https://raduconholdings.com` only in the Railway production environment.
 
 For a fresh Railway database, also set `VALIDATION_ENABLED=true` after the external-validation gate is approved. Keep it `false` to pause collection without redeploying code.
 
