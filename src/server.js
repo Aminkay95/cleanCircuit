@@ -63,11 +63,18 @@ app.post("/api/validation/signup", async (req,res,next) => {
     const email=String(req.body.email||"").trim().toLowerCase();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({error:"Enter a valid email"});
     if(req.body.consent!==true) return res.status(400).json({error:"Consent is required"});
-    await validationStore.create({email,businessName:String(req.body.businessName||"").trim().slice(0,120),teamSize:String(req.body.teamSize||"").trim().slice(0,40),source:"validation-page",consent:{given:true,textVersion:"pilot-v1",at:new Date().toISOString()}});
+    await validationStore.create({recordType:"signup",email,businessName:String(req.body.businessName||"").trim().slice(0,120),teamSize:String(req.body.teamSize||"").trim().slice(0,40),market:String(req.body.market||process.env.PRIMARY_MARKET||"United States").trim().slice(0,80),source:"validation-page",consent:{given:true,textVersion:"pilot-v1",at:new Date().toISOString()}});
     res.status(201).json({ok:true,message:"You are on the pilot list."});
   }catch(error){next(error);}
 });
 app.get("/api/validation/signups",authorize,async(_req,res,next)=>{try{res.json(await validationStore.all());}catch(error){next(error);}});
+app.post("/api/validation/interviews",authorize,async(req,res,next)=>{try{
+  const pain=Number(req.body.painScore);if(!Number.isInteger(pain)||pain<1||pain>10)return res.status(400).json({error:"painScore must be 1-10"});
+  const record=await validationStore.create({recordType:"interview",businessName:String(req.body.businessName||"").trim().slice(0,120),market:String(req.body.market||"").trim().slice(0,80),painScore:pain,coreProblemConfirmed:req.body.coreProblemConfirmed===true,pilotAccepted:req.body.pilotAccepted===true,paidPilotAccepted:req.body.paidPilotAccepted===true,notes:String(req.body.notes||"").trim().slice(0,2000)});res.status(201).json(record);
+}catch(error){next(error);}});
+app.get("/api/validation/metrics",authorize,async(_req,res,next)=>{try{
+  const records=await validationStore.all();const interviews=records.filter(row=>row.recordType==="interview");const signups=records.filter(row=>row.recordType==="signup"||!row.recordType);const metrics={signups:signups.length,interviews:interviews.length,problemConfirmed:interviews.filter(row=>row.coreProblemConfirmed).length,pilotAccepted:interviews.filter(row=>row.pilotAccepted).length,paidPilotAccepted:interviews.filter(row=>row.paidPilotAccepted).length,averagePain:interviews.length?Math.round(interviews.reduce((sum,row)=>sum+row.painScore,0)/interviews.length*10)/10:0};metrics.thresholds={interviews:10,problemConfirmed:6,pilotAccepted:3,paidPilotAccepted:2};metrics.passed=Object.entries(metrics.thresholds).every(([key,value])=>metrics[key]>=value);res.json(metrics);
+}catch(error){next(error);}});
 
 async function runResearch(overrides = {}) {
   if (activeRun) return activeRun;

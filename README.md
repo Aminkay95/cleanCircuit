@@ -93,6 +93,8 @@ Set `PUBLIC_BUSINESS_NAME` and a monitored `PUBLIC_CONTACT_EMAIL` before signup 
 
 For a fresh Railway database, also set `VALIDATION_ENABLED=true` after the external-validation gate is approved. Keep it `false` to pause collection without redeploying code.
 
+The control room records structured interviews and calculates the validation gate automatically: 10 interviews, 6 confirming the core problem, 3 accepting a pilot, and 2 accepting a stated paid-pilot price. The primary market is the United States, with global card acceptance through the activated Kenyan Paystack merchant account.
+
 ## Paystack and Resend
 
 Paystack is the planned payment provider and Resend is the planned email provider. Both default to sandbox adapters. Keep `PAYMENTS_MODE=sandbox` and `EMAIL_MODE=sandbox` during validation. Real provider modes require their server-side keys and a later production/payments approval.
