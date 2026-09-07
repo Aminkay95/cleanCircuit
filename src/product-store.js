@@ -30,7 +30,7 @@ class ProductStore {
       contract: { status: "not_sent", provider: "sandbox" },
       schedule: { status: "unscheduled", startsAt: null },
       handoff: { status: "pending", subcontractor: null },
-      deposit: { status: "not_requested", provider: "sandbox", checkoutUrl: null },
+      deposit: { status: "not_requested", provider: "paystack_sandbox", checkoutUrl: null },
       timeline: [{ at: now, event: "job.created", detail: "Draft quote created" }]
     };
     return this.#mutate((rows) => [job, ...rows], job);
@@ -68,7 +68,7 @@ class PostgresProductStore {
   async all() { const { rows } = await this.pool.query("SELECT payload FROM service_jobs ORDER BY created_at DESC"); return rows.map((row) => row.payload); }
   async create(input) {
     const now = new Date().toISOString(); const id = crypto.randomUUID();
-    const job = { id, createdAt:now, updatedAt:now, customer:{name:input.customerName,email:input.customerEmail,address:input.serviceAddress}, service:{description:input.description,date:input.serviceDate,amountCents:input.amountCents,depositCents:input.depositCents}, quote:{number:`Q-${Date.now().toString().slice(-7)}`,status:"draft"}, contract:{status:"not_sent",provider:"sandbox"}, schedule:{status:"unscheduled",startsAt:null}, handoff:{status:"pending",subcontractor:null}, deposit:{status:"not_requested",provider:"sandbox",checkoutUrl:null}, timeline:[{at:now,event:"job.created",detail:"Draft quote created"}] };
+    const job = { id, createdAt:now, updatedAt:now, customer:{name:input.customerName,email:input.customerEmail,address:input.serviceAddress}, service:{description:input.description,date:input.serviceDate,amountCents:input.amountCents,depositCents:input.depositCents}, quote:{number:`Q-${Date.now().toString().slice(-7)}`,status:"draft"}, contract:{status:"not_sent",provider:"sandbox"}, schedule:{status:"unscheduled",startsAt:null}, handoff:{status:"pending",subcontractor:null}, deposit:{status:"not_requested",provider:"paystack_sandbox",checkoutUrl:null}, timeline:[{at:now,event:"job.created",detail:"Draft quote created"}] };
     await this.pool.query("INSERT INTO service_jobs(id, created_at, payload) VALUES($1,$2,$3)",[id,now,job]); return job;
   }
   async transition(id,event,apply) {

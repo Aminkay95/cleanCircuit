@@ -1,0 +1,5 @@
+const test=require("node:test");const assert=require("node:assert/strict");const crypto=require("node:crypto");
+const paystack=require("../src/integrations/paystack");const resend=require("../src/integrations/resend");
+test("Paystack remains sandboxed by default",async()=>{delete process.env.PAYMENTS_MODE;const result=await paystack.initializeDeposit({email:"qa@example.test",amountCents:5000,reference:"ref_test"});assert.equal(result.provider,"paystack_sandbox");assert.match(result.authorizationUrl,/^sandbox:\/\/paystack/);});
+test("Paystack webhook uses HMAC SHA512",()=>{process.env.PAYSTACK_SECRET_KEY="test-secret";const body={event:"charge.success"};const signature=crypto.createHmac("sha512","test-secret").update(JSON.stringify(body)).digest("hex");assert.equal(paystack.verifyWebhook(body,signature),true);delete process.env.PAYSTACK_SECRET_KEY;});
+test("Resend remains sandboxed by default",async()=>{delete process.env.EMAIL_MODE;const result=await resend.sendEmail({to:"qa@example.test",subject:"Test",html:"<p>Test</p>",idempotencyKey:"one"});assert.equal(result.provider,"resend_sandbox");});

@@ -92,3 +92,9 @@ After approval, `/validate` accepts consented pilot signups with basic rate limi
 Set `PUBLIC_BUSINESS_NAME` and a monitored `PUBLIC_CONTACT_EMAIL` before signup collection opens. These values appear in the pilot privacy notice and are deliberately required even after validation approval.
 
 For a fresh Railway database, also set `VALIDATION_ENABLED=true` after the external-validation gate is approved. Keep it `false` to pause collection without redeploying code.
+
+## Paystack and Resend
+
+Paystack is the planned payment provider and Resend is the planned email provider. Both default to sandbox adapters. Keep `PAYMENTS_MODE=sandbox` and `EMAIL_MODE=sandbox` during validation. Real provider modes require their server-side keys and a later production/payments approval.
+
+Paystack transaction initialization happens only on the server and amounts are sent in currency subunits. Before real payments, wire the signed `charge.success` webhook to the persisted job and verify both reference and amount. Resend sends use idempotency keys to prevent accidental duplicate messages.
