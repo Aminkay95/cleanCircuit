@@ -7,7 +7,7 @@ function enabled() { return process.env.PAYMENTS_MODE === "paystack"; }
 async function initializeDeposit({ email, amountCents, reference, callbackUrl }) {
   if (!enabled()) return { provider:"paystack_sandbox", reference, authorizationUrl:`sandbox://paystack/${reference}` };
   if (!process.env.PAYSTACK_SECRET_KEY) throw Object.assign(new Error("PAYSTACK_SECRET_KEY is not configured"),{status:503});
-  const response=await fetch(`${API}/transaction/initialize`,{method:"POST",headers:{Authorization:`Bearer ${process.env.PAYSTACK_SECRET_KEY}`,"Content-Type":"application/json"},body:JSON.stringify({email,amount:String(amountCents),reference,currency:process.env.PAYSTACK_CURRENCY||"KES",callback_url:callbackUrl})});
+  const response=await fetch(`${API}/transaction/initialize`,{method:"POST",headers:{Authorization:`Bearer ${process.env.PAYSTACK_SECRET_KEY}`,"Content-Type":"application/json"},body:JSON.stringify({email,amount:String(amountCents),reference,currency:process.env.PAYSTACK_CURRENCY||"USD",callback_url:callbackUrl})});
   const body=await response.json(); if(!response.ok||!body.status) throw Object.assign(new Error(body.message||"Paystack initialization failed"),{status:502});
   return {provider:"paystack",reference:body.data.reference,authorizationUrl:body.data.authorization_url,accessCode:body.data.access_code};
 }
