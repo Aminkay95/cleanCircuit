@@ -1,4 +1,4 @@
-# SLA Flow organic validation package
+# SweepRelay organic validation package
 
 ## Ideal interview candidate
 

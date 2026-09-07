@@ -39,7 +39,7 @@ function createProductRouter(store, authorize) {
     } catch (error) { next(error); }
   });
 
-  router.post("/jobs/:id/quote/send", emailTransition(store,"quote.sent",job=>{job.quote.status="sent";return job;},job=>({to:job.customer.email,subject:`Quote ${job.quote.number} from SLA Flow`,html:`<p>Your service quote is ready.</p>`,idempotencyKey:`quote-${job.id}`})));
+  router.post("/jobs/:id/quote/send", emailTransition(store,"quote.sent",job=>{job.quote.status="sent";return job;},job=>({to:job.customer.email,subject:`Quote ${job.quote.number} from ${process.env.PRODUCT_NAME||"SweepRelay"}`,html:`<p>Your service quote is ready.</p>`,idempotencyKey:`quote-${job.id}`})));
   router.post("/jobs/:id/contract/send", emailTransition(store,"contract.sent",job=>{if(job.quote.status!=="sent")throw conflict("Send the quote first");job.contract.status="sent";job.contract.requestId=`sig_test_${job.id.slice(0,8)}`;return job;},job=>({to:job.customer.email,subject:`Contract for ${job.quote.number}`,html:"<p>Your service contract is ready for review.</p>",idempotencyKey:`contract-${job.id}`})));
   router.post("/jobs/:id/contract/sign", transition(store, "contract.signed", (job) => {
     if (job.contract.status !== "sent") throw conflict("Send the contract first");
