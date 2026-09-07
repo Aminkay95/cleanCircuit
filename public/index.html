@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SaaS Scout</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div><span class="eyebrow">AI TEAM / CONTROL ROOM</span><h1>SaaS Scout</h1></div>
+      <span id="health" class="status">Connecting…</span>
+    </header>
+    <section class="hero">
+      <div><p class="kicker">Research before code</p><h2>Find underserved workflows.<br>Build only after approval.</h2><p id="config" class="muted"></p></div>
+      <div class="controls">
+        <label>Admin token<input id="token" type="password" placeholder="Paste ADMIN_TOKEN from .env"><span id="token-status" class="field-status"></span></label>
+        <label>Research niche<input id="niche" placeholder="e.g. field-service SaaS in East Africa"></label>
+        <button id="run">Run research</button>
+      </div>
+    </section>
+    <div class="section-title"><h3>Opportunity pipeline</h3><span id="count"></span></div>
+    <section id="opportunities" class="grid"><p class="muted">Loading opportunities…</p></section>
+  </main>
+  <template id="card-template">
+    <article class="card">
+      <div class="card-top"><span class="badge"></span><span class="score"></span></div>
+      <h3 class="title"></h3><p class="problem"></p>
+      <dl><div><dt>Customer</dt><dd class="customer"></dd></div><div><dt>Differentiation</dt><dd class="difference"></dd></div></dl>
+      <details><summary>Evidence and competitors</summary><div class="evidence"></div></details>
+      <section class="plan"></section>
+      <div class="actions"><button class="approve">Approve for planning</button><button class="reject secondary">Reject</button></div>
+    </article>
+  </template>
+  <script src="/app.js"></script>
+</body>
+</html>
